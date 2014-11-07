@@ -50,7 +50,10 @@ public class Hw3Course {
     public int getCapacity() {
         return capacity;
     }  //getter returns private field capacity
-
+    
+    public int getClassSize(){
+        return classSize;
+    }
     public int getRosterSize() {
         return roster.size();
     }   //getter returns the size of the private ArrayList roster

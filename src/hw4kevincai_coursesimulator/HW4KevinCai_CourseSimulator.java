@@ -48,7 +48,7 @@ public class HW4KevinCai_CourseSimulator {
             userSelection = console.nextInt();
         }
 
-        System.out.println(userSelection);
+        //System.out.println(userSelection);
 
     }
 
@@ -57,11 +57,16 @@ public class HW4KevinCai_CourseSimulator {
         Hw3Course newCourse;
         Hw3Student newGStudent;
         Hw3Student newUStudent;
+        //created variable for student ID
         int sID = 1;
+        //Variable for the different major UGRAD and GRAD
         Classification major;
+        //Variable for deciding between UGRAD and GRAD
         float cutoff = (float) 0.75;
+        //Variable for rejecting students
         float gradCutoff = (float) 3.2;
         float ugradCutoff = (float) 2.8;
+
         float gpa = 0, decideMajor;
         int gStudent = 0, uStudent = 0;
         int undergradClass = 0, gradClass = 0;
@@ -84,21 +89,26 @@ public class HW4KevinCai_CourseSimulator {
         newGStudent = new Hw3Student(sID, Classification.GRAD, gpa);
         waitListU.add(newGStudent);
 
-        //creates random numbers for GPA and Major
-        Random selectGPA = new Random();
-        Random selectMajor = new Random();
-
+        //create a loop that will simulate the MAX # of students (300)
         for (int i = 0; i < MAX_STUDENTS; i++) {
+            //increment the student id by 1
             sID++;
+            //creates random numbers for GPA and Major
+            Random selectGPA = new Random();
+            Random selectMajor = new Random();
+
+            //take the randomized gpa, multiply for 4 cause gpa ranges from 0-4, put into variable gpa
             gpa = selectGPA.nextFloat() * 4;
+            //take the randomized major and put it in the variable decideMajor
             decideMajor = selectMajor.nextFloat();
 
             //this determines if the major is grad or undergrad based on the cutoff variable above
             if (decideMajor > cutoff) {
                 major = Classification.GRAD;
+                //this counts how many is major = grad
                 gradClass++;
+                //nested expression that in addition to decideMajor, gpa also determines whether student is rejected or not
                 if (gpa > gradCutoff) {
-
                     newGStudent = new Hw3Student(sID, major, gpa);
                     //by using courseArray this allows me to pull in methods from the Hw3Course class
                     if (courseArray.get(indexOfCurrAvailGSection).isFull()) {
@@ -138,25 +148,44 @@ public class HW4KevinCai_CourseSimulator {
         return courseArray;
 
     }
+
     public static void printCourseInfo(ArrayList<Hw3Course> allCourses) {
         Hw3Course Course;
         Iterator<Hw3Course> iTCourse = allCourses.iterator();
         while (iTCourse.hasNext()) {
             Course = iTCourse.next();
-            System.out.println("Listing courses available in the system. \n " 
+            System.out.println("Listing courses available in the system. \n "
                     + Course.getNumber() + "\t" + Course.getTitle() + "\t" + Course.getRosterSize());
-            
+
         }
+        
     }
 
     public static void findAndPrintRosterInfo(int courseToFind, ArrayList<Hw3Course> allCourses) {
+        Hw3Course Course;
+        Hw3Student Student;
+        boolean found=false;
+        Iterator<Hw3Course> itC = allCourses.iterator();
+        Iterator<Hw3Student> itS;
         
-    }
-    
-    public static void dropAndAdjustRoster (ArrayList<Hw3Course> allCourses, int studentToFind) {
-        
+        while (itC.hasNext()) {
+            Course = itC.next();
+            if (Course.getNumber() == courseToFind) {
+                found=true;
+                itS = Course.getwaitList().iterator();
+                while (itS.hasNext()){
+                    Student = itS.next();
+                    System.out.println("");
+                }
+            }
+        }
+        if (found == false){
+            System.out.println("");
+        }
     }
 
-    
+    public static void dropAndAdjustRoster(ArrayList<Hw3Course> allCourses, int studentToFind) {
+
+    }
 
 }
