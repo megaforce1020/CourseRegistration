@@ -34,7 +34,7 @@ public class Hw3Student {
     }
 
     public String getSInfoisFull() {
-        return studentGPA + "\t" + studentID + "\t" + studentID + "\t";
+        return studentID + "\t" + studentClass + "\t" + studentGPA + "\t";
     }
 }
 

@@ -28,7 +28,7 @@ public class HW4KevinCai_CourseSimulator {
      */
     public static void main(String[] args) {
         Scanner console = new Scanner(System.in);
-        int userSelection;
+        int userSelection, courseToFind, studentToFind;
         ArrayList<Hw3Course> theCourses = new ArrayList<>();
         System.out.println("------------------------------------------------------\n"
                 + "Please select from the following options:\n"
@@ -38,16 +38,55 @@ public class HW4KevinCai_CourseSimulator {
                 + "4. Drop student and adjust roster for a course\n"
                 + "5. Exit from system");
         userSelection = console.nextInt();
+        while(userSelection!=5){
         if (userSelection == 1) {
             theCourses = simulate();
-            System.out.println(theCourses);
+            System.out.println("-------------------------------------------------------------\nPlease select from the following options:\n"
+                    + "1. Simulate\n"
+                    + "2. View available courses\n"
+                    + "3. View roster for a course\n"
+                    + "4. Drop student and adjust roster for a course\n"
+                    + "5. Exit from system\n" + "-------------------------------------------------------------");
             userSelection = console.nextInt();
         }
         if (userSelection == 2) {
             printCourseInfo(theCourses);
+            System.out.println("-------------------------------------------------------------\nPlease select another option:\n"
+                    + "1. Simulate\n"
+                    + "2. View available courses\n"
+                    + "3. View roster for a course\n"
+                    + "4. Drop student and adjust roster for a course\n"
+                    + "5. Exit from system\n" + "-------------------------------------------------------------");
             userSelection = console.nextInt();
         }
-
+        if (userSelection == 3) {
+            System.out.println("Please input either course 4415 or 6615");
+            courseToFind = console.nextInt();
+            findAndPrintRosterInfo(courseToFind, theCourses);
+            System.out.println("-------------------------------------------------------------\nPlease select another option:\n"
+                    + "1. Simulate\n"
+                    + "2. View available courses\n"
+                    + "3. View roster for a course\n"
+                    + "4. Drop student and adjust roster for a course\n"
+                    + "5. Exit from system\n" + "-------------------------------------------------------------");
+            userSelection = console.nextInt();
+        }
+        if (userSelection == 4) {
+            System.out.println("Please enter a student ID to drop:");
+            studentToFind = console.nextInt();
+            dropAndAdjustRoster(theCourses, studentToFind);
+            System.out.println("-------------------------------------------------------------\nPlease select from the following options:\n"
+                    + "1. Simulate\n"
+                    + "2. View available courses\n"
+                    + "3. View roster for a course\n"
+                    + "4. Drop student and adjust roster for a course\n"
+                    + "5. Exit from system\n" + "-------------------------------------------------------------");
+            userSelection = console.nextInt();
+        }
+        else if (userSelection == 5){
+            System.out.println("Bye");
+        }
+        }
         //System.out.println(userSelection);
 
     }
@@ -55,8 +94,10 @@ public class HW4KevinCai_CourseSimulator {
     public static ArrayList<Hw3Course> simulate() {
         //create list of variables
         Hw3Course newCourse;
-        Hw3Student newGStudent;
-        Hw3Student newUStudent;
+        Hw3Student newGStudent, newUStudent;
+        //creates random numbers for GPA and Major
+        Random selectGPA = new Random();
+        Random selectMajor = new Random();
         //created variable for student ID
         int sID = 1;
         //Variable for the different major UGRAD and GRAD
@@ -80,7 +121,9 @@ public class HW4KevinCai_CourseSimulator {
         courseArray.add(newCourse);
         newCourse = new Hw3Course(4415, "Java-1", CLASSUMAXSIZE);
         courseArray.add(newCourse);
-
+        
+        /*
+        Extra unnecessary stuff
         ArrayList<Hw3Student> waitListU = new ArrayList<>();
         newUStudent = new Hw3Student(sID, Classification.UGRAD, gpa);
         waitListU.add(newUStudent);
@@ -88,15 +131,12 @@ public class HW4KevinCai_CourseSimulator {
         ArrayList<Hw3Student> waitListG = new ArrayList<>();
         newGStudent = new Hw3Student(sID, Classification.GRAD, gpa);
         waitListU.add(newGStudent);
-
+        */
+                
         //create a loop that will simulate the MAX # of students (300)
         for (int i = 0; i < MAX_STUDENTS; i++) {
             //increment the student id by 1
             sID++;
-            //creates random numbers for GPA and Major
-            Random selectGPA = new Random();
-            Random selectMajor = new Random();
-
             //take the randomized gpa, multiply for 4 cause gpa ranges from 0-4, put into variable gpa
             gpa = selectGPA.nextFloat() * 4;
             //take the randomized major and put it in the variable decideMajor
@@ -151,11 +191,11 @@ public class HW4KevinCai_CourseSimulator {
 
     public static void printCourseInfo(ArrayList<Hw3Course> allCourses) {
         Hw3Course Course;
-        Iterator<Hw3Course> iTCourse = allCourses.iterator();
-        while (iTCourse.hasNext()) {
-            Course = iTCourse.next();
+        Iterator<Hw3Course> itC = allCourses.iterator();
+        while (itC.hasNext()) {
+            Course = itC.next();
             System.out.println("Listing courses available in the system. \n "
-                    + Course.getNumber() + "\t" + Course.getTitle() + "\t" + Course.getRosterSize());
+                    + Course.getNumber() + "\t" + Course.getTitle() + "\t" + Course.getRosterSize() + "\t" + Course.getCapacity());
 
         }
         
@@ -172,19 +212,45 @@ public class HW4KevinCai_CourseSimulator {
             Course = itC.next();
             if (Course.getNumber() == courseToFind) {
                 found=true;
-                itS = Course.getwaitList().iterator();
+                itS = Course.getRoster().iterator();
                 while (itS.hasNext()){
                     Student = itS.next();
-                    System.out.println("");
+                    System.out.println("" + Student.getSInfoisFull());
                 }
             }
         }
         if (found == false){
-            System.out.println("");
+            System.out.println("The Class you want is not found");
         }
     }
 
     public static void dropAndAdjustRoster(ArrayList<Hw3Course> allCourses, int studentToFind) {
+        Hw3Course Course;
+        Hw3Student Student;
+        boolean found = false;
+        Iterator<Hw3Course> itC = allCourses.iterator();
+        Iterator<Hw3Student> itS;
+        ArrayList<Hw3Student> waitList;
+        System.out.println("\n******************trying to drop a Student and move a Student from waitlister****************\n");
+        while (itC.hasNext() && found == false) {
+            Course = itC.next();
+            waitList = Course.getwaitList();
+            itS = waitList.iterator();
+            while (itS.hasNext() && found == false) {
+                Student = itS.next();
+                if (Student.getID() == studentToFind) {
+                    found = true;
+                    Course.addStudentToRoster(Student);
+                    waitList.remove(Student);
+                }
+            }
+            if (found == true) {
+                System.out.println("Student was found in " +Course.getTitle()+", and dropped, and the waitlst is now of size: " +Course.getwaitListSize());
+            }
+        }
+        if (found == false) {
+            System.out.println("The Student ID you want is not found");
+        }
 
     }
 
